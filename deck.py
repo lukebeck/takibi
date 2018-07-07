@@ -1,4 +1,8 @@
-import card
+from card import Card
+
+# required for card class:
+import datetime
+import math
 
 class Deck:
     def __init__(self,cards=[]):

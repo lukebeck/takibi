@@ -36,9 +36,9 @@ class Card:
     def evaluate_answer(self,answer):
         '''return pass or fail mark for answer of card's question.'''
         if answer:
-            self.stability += 1
+            self.s += 1
         else:
-            self.stability = 0
+            self.s = 0
         self.reschedule()
     
     def reschedule(self):
@@ -46,6 +46,3 @@ class Card:
         using Ebbinghaus's forgetting curve.'''
         self.t = math.log(self.r)*-self.s
         self.next_review = datetime.datetime.now() + datetime.timedelta(days=self.t)
-    
-# for easy testing purposes
-card = Card('漢字','kanji','かんじ','漢字は2000以上ある！')
