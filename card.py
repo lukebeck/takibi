@@ -1,48 +1,52 @@
-import datetime
+from datetime import datetime, timedelta
 import math
-
-# temporary method for generating unique id for each card object
-id = 1
+import re
 
 class Card:
-    def __init__(self,word,meaning,pronunciation,example):
-        '''Initialise the card by setting front, back
-        and other automatically-generated properties.'''
-        # Semantic Content
-        self.word = word
-        self.meaning = meaning
-        self.pronunciation = pronunciation
-        self.example = example
-        # Study properties
-        self.r = 0.5    #retrievable
-        self.s = 0      #stability
-        self.t = math.log(self.r)*-self.s
-        self.reschedule() # sets self.next_review
-        # Properties
-        self.created_at = datetime.datetime.now()
-        # temporary approach for unique id generation
-        # to be replaced with database class method
-        global id
-        self.id = id
-        id += 1
+    def __init__(self,content,data=None):
+        '''Initialise the card by setting its content
+        and data values.'''
+        # content
+        # [key,pronunciation,meaning,example]
+        self.key = content[0]
+        self.pronunciation = content[1]
+        self.meaning = content[2]
+        self.example = re.sub(r'([^\{]*)(?=\})','',content[3])
+        self.cloze = re.search(r'([^\{]*)(?=\})',content[3]).group()
+        # data
+        # [id,date_added,stability,next_review]
+        if not data:
+            self.id = 0
+            self.date_created = datetime.now()
+            self.stability = 0
+            self.next_review = datetime.now()
+        else:
+            self._set_data(data)
+
+    def schedule(self,retrievablity_threshold=0.5):
+        '''Takes retrievablity threshold and stability of a card and uses
+        forgetting curve to calculate and return next review time'''
+        t = math.log(retrievablity_threshold)*-self.stability
+        self.next_review = datetime.now() + timedelta(days=t)
+
+    def _set_data(self,data):
+        '''sets card data from list of values provided'''
+        self.id = data[0]
+        self.date_created = data[1]
+        self.stability = data[2]
+        self.next_review = data[3]
 
     def match(self,filter):
         '''Determine if this card matches the filter
         text. Return True if it matches, False otherwise.
 
-        Search is case sensitive and matches both word, meaning and pronunciation.'''
-        return filter in self.word or filter in self.meaning or filter in self.pronunciation
-    
-    def evaluate_answer(self,answer):
+        Search is case sensitive and matches key.'''
+        return filter in self.key
+
+    def test(self,answer):
         '''return pass or fail mark for answer of card's question.'''
         if answer:
-            self.s += 1
+            self.sttability += 1
         else:
-            self.s = 0
-        self.reschedule()
-    
-    def reschedule(self):
-        '''schedule next review based on retrievability decay threshold and stability
-        using Ebbinghaus's forgetting curve.'''
-        self.t = math.log(self.r)*-self.s
-        self.next_review = datetime.datetime.now() + datetime.timedelta(days=self.t)
+            self.stability = 0
+        self.schedule()
