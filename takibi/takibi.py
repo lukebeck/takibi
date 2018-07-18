@@ -297,8 +297,3 @@ class Input:
         '''Prints each item of a list to a new line.'''
         for item in list:
             print(item)
-
-def run():
-    db = Database(db_file)
-    d = Deck(db)
-    m = Menu(d)
