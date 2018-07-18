@@ -1,7 +1,7 @@
 🔥 Takibi.py 🔥
 ==============
 
-Takibi is a cli flashcard application. It only has basic functionality and no error messaging.
+Takibi is a cli flashcard application. It has only basic functionality and no error messaging.
 
 🔥 Installing
 ----------
@@ -10,7 +10,9 @@ Install takibi in a location that you can easily access, as adding new words is 
 
 To install takibi, download it and then in the top directory run:
 
-`pip3 install -e .`
+```sh
+pip3 install -e .
+```
 
 Then you can call it from the command line with `takibi`.
 
@@ -19,9 +21,11 @@ To test takibi after installing, run the program and try importing the test word
 🔥 Usage
 -----
 
-To use takibi, call it from the command line along:
+To use takibi, call it from the command line:
 
-`takibi`
+```sh
+takibi
+```
 
 This will load the menu, which gives you 4 options:
 
